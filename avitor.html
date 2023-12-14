@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: black;
+    }
+    
+    .nav {
+      height: 50px;
+      background-color: rgb(220, 120, 0);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 20px;
+    }
+    
+    .cash {
+      border: 2px solid black;
+      border-radius: 3px;
+      padding: 5px;
+      color: white;
+      font-weight: 900;
+      box-shadow: 1px 1px 5px black;
+     /* color: rgb(200, 200, 200);*/
+    }
+    
+    .cont {
+      color: white;
+      border: 5px solid grey;
+      margin: auto;
+      margin-top: 50px;
+      margin-bottom: 50px;
+      width: 80%;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      border-radius: 10px;
+    }
+    
+    .inps button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: rgb(220, 120, 0);
+      border-color: white;
+    }
+    
+    .sec2 {
+      padding: 0px 20px;
+      display: flex;
+      
+    }
+    
+    .inps input {
+      height: 30px;
+      width: 80px;
+      text-align: center;
+      background-color: grey;
+      color: black;
+      font-size: 18px;
+      border-color: white;
+      border-radius: 5px;
+    }
+    
+    .but {
+      width: 50%;
+      height: 100px;
+      margin-left: 10px;
+      background: rgb(0, 200, 0);
+      color: white;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      border-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="cash"><span>$</span> <span class="handCash">1000</span></div>
+  </div>
+  <div class="cont">
+    0.00
+  </div>
+
+  <div class="sec2">
+    <div class="inps">
+      <button>-</button>
+      <input type="number" value = "50">
+      <button>+</button>
+    </div>
+  <button class="but">PLAY</button>
+  </div>
+  
+  <script>
+  
+  const play = document.querySelector(".but");
+  const counter = document.querySelector(".cont");
+  const stake = document.querySelector(".inps input");
+  const accBal = document.querySelector(".handCash");
+  const inps = document.querySelector(".inps");
+  
+  let ru = 1;
+  
+  let arr = [10, 10, 10, 10, 50, 100, 200, 10, 10, 10, 10];
+  
+   
+    let start = 1;
+    let rest = 0;
+    let go;
+    let rand;
+    
+    function add() {
+      stake.value = parseInt(stake.value) + 10;
+    }
+    function minus() {
+      stake.value -= 10;
+    }
+    
+    inps.addEventListener("click",(e)=>{
+      if(e.target.textContent == "-"){
+        if (stake.value > 50 ) {
+        minus();
+        }
+      }else if(e.target.textContent == "+"){
+        add();
+      }
+    })
+    
+     
+    
+    function fly() {
+      start += 0.01;
+      
+      document.querySelector(".cont").innerHTML = start.toFixed(2);
+      
+      if (ru == 1) {
+        
+        let arR = Math.floor(Math.random()*11);
+  
+    let rand2 = (Math.random()*arr[arR]).toFixed(2);
+    let rand1 = (Math.random()*rand2).toFixed(2);
+     rand = (Math.random()*rand1 + 1).toFixed(2);
+    //console.log(rand);
+    
+      }
+      ru = 0;
+      if (start >= rand) {
+        clearInterval(go);
+        play.style.background = "green";
+        counter.style.color = "red";
+        play.innerHTML = "reset";
+        play.style.opacity = 1;
+        
+       
+        rest = 2
+        
+      }
+    }
+    
+    function cashOut() {
+        let getStart  = start * parseInt(stake.value);
+        
+        accBal.innerHTML = (parseInt(accBal.innerHTML) + getStart).toFixed(2);
+        //console.log(getStart + " " + start);
+        play.style.opacity = 0.5;
+        
+      rest = 3;
+      }
+      
+      function reset() {
+        counter.innerHTML = "0.00";
+        counter.style.color = "white";
+        start = 1;
+        play.innerHTML = "PLAY";
+        
+        rest = 0;
+      }
+    
+    
+    
+    function call() {
+      //console.log(result);
+      let result =  parseInt(accBal.innerHTML) - parseInt(stake.value);
+      
+      if (result >= 0 && parseInt(accBal.innerHTML) != 0) {
+      go = setInterval(fly, 50);
+      
+      play.style.background = "orange";
+      play.innerHTML = "cash out";
+      
+      accBal.innerHTML = result;        
+
+      ru = 1;
+      
+      rest = 1;
+      }
+      else {
+        alert("Insufficient Funds");
+      }
+    }
+    
+    play.addEventListener("click", () => {
+      
+      if (rest == 0) {
+        call();
+      } else if (rest == 1) {
+        cashOut();
+      } else if(rest == 2) {
+        reset();
+      }
+    })
+     
+     //console.log(this);
+  </script>
+</body>
+</html>
